@@ -1,6 +1,9 @@
-var cfg = require('./config');
+var { cfg, vmCtx } = require('./config');
 var formidable = require('formidable');
 var cheerio = require('cheerio');
+var path = require('path');
+var vm = require('vm');
+var fs = require('fs');
 
 function compile(filePath, req, cb) {
     vmCtx.http.method = req.method;
@@ -53,7 +56,7 @@ function processHTML(e) {
     return $.html();
 }
 
-function compileWrapper(url, req) {
+function compileWrapper(url, req, res) {
     compile(path.join(cfg.httpDir, url + ".html"), req, (e => {
         if(vmCtx.http.redirect) {
             res.writeHead(301, {
