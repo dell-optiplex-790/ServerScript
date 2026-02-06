@@ -1,0 +1,5 @@
+{
+	"uploadDir": "uploads",
+	"port": 3000,
+	"httpDir": "public"
+}

@@ -1,0 +1,31 @@
+{
+  "dependencies": {
+    "cheerio": "^1.2.0",
+    "formidable": "^3.5.4",
+    "mime": "^4.1.0"
+  },
+  "name": "serverscript",
+  "version": "2.0.0",
+  "description": "Decompilation of my legacy server software \"ServerScript\"",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dell-optiplex-790/ServerScript.git"
+  },
+  "keywords": [
+    "server",
+    "nodejs",
+    "http",
+    "templating"
+  ],
+  "author": "dell-optiplex-790",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dell-optiplex-790/ServerScript/issues"
+  },
+  "homepage": "https://github.com/dell-optiplex-790/ServerScript#readme"
+}
