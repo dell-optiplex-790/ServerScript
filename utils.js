@@ -5,9 +5,38 @@ var path = require('path');
 var vm = require('vm');
 var fs = require('fs');
 
+function serializeCookies(cookie, settings = {}){
+    return Object.entries(cookie).map(([k, v]) => {
+        var arr = [ encodeURIComponent(k) + "=" + encodeURIComponent(v) ];
+        if(settings.maxAge) {
+            arr.push("Max-Age=" + settings.maxAge);
+        }
+        if(settings.domain) {
+            arr.push("Domain=" + settings.domain);
+        }
+        if(settings.path) {
+            arr.push("Path=" + settings.path);
+        }
+        if(settings.expires) {
+            arr.push("Expires=" + settings.expires.toUTCString());
+        }
+        if(settings.httpOnly) {
+            arr.push("HttpOnly");
+        }
+        if(settings.secure) {
+            arr.push("Secure");
+        }
+        if(settings.sameSite) {
+            arr.push("SameSite="+settings.sameSite);
+        }
+        return arr.join("; ");
+    });
+}
+
 function compile(filePath, req, cb) {
     vmCtx.http.method = req.method;
     vmCtx.http.status = 200;
+    vmCtx.http.cookies = Object.fromEntries(new URLSearchParams(t.headers.cookie.replace(/;\s*/g,"&"))) || {};
     if(req.method == 'POST') {
         var form = new formidable.IncomingForm();
         form.uploadDir = cfg.uploadDir;
@@ -58,16 +87,18 @@ function processHTML(e) {
 
 function compileWrapper(url, req, res) {
     compile(path.join(cfg.httpDir, url + ".html"), req, (e => {
+        var headers = {
+            "Content-Type": "text/html"
+        }
+        if(JSON.stringify(cookies) != JSON.stringify(src_ctx.http.cookies)) {
+            headers["Set-Cookie"] = serializeCookies(vmCtx.http.cookies, { path: "/" });
+        }
         if(vmCtx.http.redirect) {
-            res.writeHead(301, {
-                "Content-Type": "text/html",
-                Location: vmCtx.http.redirect
-            });
+            headers["Location"] = vmCtx.http.redirect;
+            res.writeHead(301, headers);
             res.end();
         } else {
-            res.writeHead(vmCtx.http.status, {
-                "Content-Type": "text/html"
-            });
+            res.writeHead(vmCtx.http.status, headers);
             res.end(e);
         }
     }));

@@ -29,6 +29,7 @@ declare const http: {
     method: 'GET' | 'POST'; // these aren't all the http methods out there but still
     status: number;
     query: Record<string, string>;
+    cookies: Record<string, string>;
 }
 
 declare const base64: {

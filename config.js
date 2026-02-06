@@ -29,7 +29,8 @@ var vmCtx = {
         formError: false,
         method: '',
         status: 200,
-        query: {}
+        query: {},
+        cookies: {}
     },
     base64: {
         encode: btoa,
